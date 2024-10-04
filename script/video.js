@@ -7,7 +7,34 @@ const loadCatagories = () => {
   .catch((error)=>console.log(error));
 }
 
+//convert seconds
+function convertSeconds(seconds) {
+  const SECONDS_IN_A_MINUTE = 60;
+  const SECONDS_IN_AN_HOUR = 60 * SECONDS_IN_A_MINUTE;
+  const SECONDS_IN_A_DAY = 24 * SECONDS_IN_AN_HOUR;
+  const SECONDS_IN_A_YEAR = 365 * SECONDS_IN_A_DAY;
 
+  const years = Math.floor(seconds / SECONDS_IN_A_YEAR);
+  seconds %= SECONDS_IN_A_YEAR;
+
+  const days = Math.floor(seconds / SECONDS_IN_A_DAY);
+  seconds %= SECONDS_IN_A_DAY;
+
+  const hours = Math.floor(seconds / SECONDS_IN_AN_HOUR);
+  seconds %= SECONDS_IN_AN_HOUR;
+
+  const minutes = Math.floor(seconds / SECONDS_IN_A_MINUTE);
+  seconds %= SECONDS_IN_A_MINUTE;
+
+  let result = '';
+  if (years > 0) result += `${years}y `;
+  if (days > 0) result += `${days}d `;
+  if (hours > 0) result += `${hours}h `;
+  if (minutes > 0) result += `${minutes}m `;
+  if (seconds > 0 || result === '') result += `${seconds}s`;
+
+  return result.trim();
+}
 
 // create display Category function
 const displayCatagories = (categories) => {
@@ -61,7 +88,7 @@ const displayVideos = (videos) => {
       <img class="h-full w-full object-cover rounded-2xl"
         src=${video.thumbnail}
         alt="Shoes" />
-        ${video.others.posted_date === "" ? '' : `<span class="absolute right-2 bottom-2 bg-black rounded p-1 text-gray-400 text-xs">${video.others.posted_date}</span>`}
+        ${video.others.posted_date === "" ? '' : `<span class="absolute right-2 bottom-2 bg-transparent rounded p-1 text-gray-400 text-xs font-light">${convertSeconds(video.others.posted_date)} ago</span>`}
     </figure>
     <div class="px-0 py-2 flex gap-2">
       <div>
