@@ -43,11 +43,12 @@ const displayCatagories = (categories) => {
   categories.forEach((item) => {
     console.log(item);
     //create button
-    const button = document.createElement("button");
-    button.classList.add("btn");
-    button.innerText = item.category;
+    const buttonContainer = document.createElement("div");
+    buttonContainer.innerHTML = `
+    <button onclick="loadVideosByCategory(${item.category_id})" class="btn">${item.category}</button>
+    `
     
-    categoryContainer.append(button);
+    categoryContainer.append(buttonContainer);
   });
 };
 
@@ -59,6 +60,12 @@ const loadVideos = () => {
   .catch(error => console.log(error))
 }
 
+const loadVideosByCategory = (id) => {
+  fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
+  .then(res => res.json())
+  .then(data => displayVideos(data.category))
+  .catch(error => console.log(error))
+}
 // {
 //   "category_id": "1003",
 //   "video_id": "aaae",
@@ -78,7 +85,20 @@ const loadVideos = () => {
 //   "description": "'Inside Amy Schumer' is a comedy show by the popular comedian Amy Schumer, blending sharp satire and unfiltered humor to tackle everyday issues and societal norms. With 3.6K views, the show promises a blend of hilarious sketches, thought-provoking stand-up, and candid interviews. It's a must-watch for fans of bold, edgy comedy."
 // }
 const displayVideos = (videos) => {
-  const videoContainer = document.getElementById("videos")
+  const videoContainer = document.getElementById("videos");
+  videoContainer.innerHTML = "";
+  if(videos.length === 0) {
+    videoContainer.classList.remove("grid");
+    videoContainer.innerHTML = `
+    <div class="min-h-screen flex flex-col gap-5 justify-center items-center">
+      <img class="max-h-24" src="./assets/Icon.png" />
+      <h1 class="text-2xl font-bold">No Videos Found</h1>
+    </div>
+    `
+    return;
+  }else {
+    videoContainer.classList.add("grid");
+  }
   videos.forEach(video => {
     console.log(video)
     const card = document.createElement("div");
